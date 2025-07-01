@@ -1,6 +1,6 @@
 on: 
   push: 
-    branches: ["master111"]
+    branches: ["master"]
 env: 
   IMAGE: reactjs-frontend-gcp
 
