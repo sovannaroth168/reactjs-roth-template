@@ -2,11 +2,11 @@ on:
   push: 
     branches: ["master"]
 env: 
-  DOCKER_IMAGE: reactjs-frontend-gcp
+  IMAGE: reactjs-frontend-gcp
 jobs: 
   build-and-push: 
     runs-on: ubuntu-latest
-    #environment: DOCKER_ENV
+    environment: DOCKER_ENV
     steps: 
       - name: Checkout code 
         uses: actions/checkout@v3
@@ -16,3 +16,17 @@ jobs:
       - name: Show the TAGS values
         run: |
           echo "TAG value is : ${{ env.TAG }}"
+      - name: login to Dockerhub 
+        run: | 
+          echo "${{ secrets.PASSWORD }}" | docker login -u ${{ secrets.USERNAME }} --password-stdin
+
+      - name: Build docker image 
+        run: docker build -t ${{ secrets.USERNAME }}/${{env.IMAGE}}:${{env.TAG }}
+      - name: Push docker image 
+        run: |
+          docker push ${{ secrets.USERNAME }}/${{env.IMAGE }}:${{ env.TAG }}
+      - name: Logout from the Registry
+        if: always()
+        run: |
+          docker logout
+
